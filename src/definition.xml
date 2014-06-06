@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-	<ModulePrefs title="Resourcescan Gadget" description="Use this gadget to easily display the ResourceScan Dashboard in your own custom dashboards." thumbnail="ResourceScanThm.png"/>
+	<ModulePrefs title="QuickSnapshot Gadget" description="Use this gadget to easily display the QuickSnapshot view for an Element in your own custom dashboards." thumbnail="ResourceScanThm.png"/>
 	<gadget_version>
 		1.0
 	</gadget_version>
