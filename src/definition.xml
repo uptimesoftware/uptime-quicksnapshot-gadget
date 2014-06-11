@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Module>
-	<ModulePrefs title="QuickSnapshot Gadget" description="Use this gadget to easily display the QuickSnapshot view for an Element in your own custom dashboards." thumbnail="ResourceScanThm.png"/>
+	<ModulePrefs title="QuickSnapshot Gadget" description="Use this gadget to easily display the QuickSnapshot view for an Element in your own custom dashboards." thumbnail="QuickSnapShotThm.png"/>
 	<gadget_version>
 		1.0
 	</gadget_version>
@@ -71,7 +71,7 @@
 	<div id="dest"></div>
 	<div id="edit">
 		<div id = "availableGroups">
-			<select id="elementGroupId">
+			<select id="elementEntityId">
 				<option value="-1">Loading...</option>
 			</select>
 			</div>
@@ -99,14 +99,17 @@
 		$("#save").click(function() {
 			$(this).prop("disabled", true);
 			var settings = {
-				groupId: $('#elementGroupId').val(),
+				EntityId: $('#elementEntityId').val(),
 				scroll: $("#scroll").val()
 			};
-			settings.iframeUrl = "/main.php?section=GlobalScanResourceScan&subsection=list&id=".concat(settings.groupId);
+
+			base_url = "/main.php?section=SysStatus&displaytab=1&active=s_pollAgent&etype=6&";
+
+			settings.iframeUrl = base_url + "&id=" + settings.EntityId;
 			settings.refreshInterval = $("#refreshRate").val();
-			if (!settings.groupId) {
+			if (!settings.EntityId) {
 				$("#error").empty();
-				uptimeErrorFormatter.getErrorBox("Please select an Element Group").appendTo('#error');
+				uptimeErrorFormatter.getErrorBox("Please select an Element").appendTo('#error');
 				$("#error").slideDown();
 				$("#save").prop("disabled", false);
 			} else {
@@ -149,13 +152,13 @@
 			return naturalSort(arg1.name, arg2.name);
 		}
 
-		function populateIdSelector(selected_groupId) {
+		function populateIdSelector(selected_EntityId) {
 		var api = new apiQueries();
         $('#elementGroupId').empty().append($("<option />").val(-1).text("Loading..."));
-        return api.getAllGroups().then(function(groups) {
+        return api.getAllElements().then(function(groups) {
             // fill in element drop down list
             groups.sort(groupSort);
-            var groupSelector = $('#elementGroupId').empty();
+            var groupSelector = $('#elementEntityId').empty();
             var hasMyInfrastructure = false;
             $.each(groups, function() {
                 groupSelector.append($("<option />").val(this.id).text(this.name));
@@ -164,8 +167,8 @@
                 }
             });
 
-            if (selected_groupId > 0) {
-                groupSelector.val(selected_groupId);
+            if (selected_EntityId > 0) {
+                groupSelector.val(selected_EntityId);
             } else if (hasMyInfrastructure) {
                 groupSelector.val(1);
             }
