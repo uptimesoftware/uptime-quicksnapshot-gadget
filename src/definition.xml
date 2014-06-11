@@ -163,9 +163,9 @@
             var groupSelector = $('#elementEntityId').empty();
             var hasMyInfrastructure = false;
             $.each(groups, function() {
-                groupSelector.append($("<option />").val(this.id).text(this.name));
-                if (this.id == 1) {
-                    hasMyInfrastructure = true;
+            	if (this.type == "Server")
+            	{
+                	groupSelector.append($("<option />").val(this.id).text(this.name));
                 }
             });
             $("#elementEntityId").chosen();
