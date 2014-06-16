@@ -111,7 +111,10 @@
 
 		function populateIdSelector(selected_EntityId) {
 			var api = new apiQueries();
+
+
 	    	$('#elementEntityId').empty().append($("<option />").val(-1).text("Loading..."));
+	    	$("#elementEntityId").trigger("liszt:updated");
 
 	        return api.getAllElements().then(function(entities) {
 	            // fill in element drop down list
@@ -125,7 +128,8 @@
 	                }
 	            });
 	            
-	            $("#elementEntityId").chosen();
+	            $("#elementEntityId").trigger("liszt:updated");
+	            
 	            
 	            if (selected_EntityId > 0) {
 	                entitySelector.val(selected_EntityId);
@@ -134,21 +138,20 @@
     	}
 
     	function populateMetricTypeSelector(selected_EntityId) {
-    		console.log("Getting Metric Types available for " + selected_EntityId);
     		var api = new apiQueries();
 	        $('#metricType').empty().append($("<option />").val(-1).text("Loading..."));
+	        $("#metricType").trigger("liszt:updated");
 
 	    	return api.getElements(selected_EntityId).then(function(entity_details) {
 		    			
 		    			//lets check if the element has a PPG monitor
 		    			var metricTypeSelector = $("#metricType").empty();
 		    			var hasPPG = false;
-		    			console.log("HasPPG = " + hasPPG);
+		    			
 		    			$.each (entity_details.monitors, function() {
 		    				if (this.name == "Platform Performance Gatherer")
 		    				{
 		    					hasPPG=true;
-		    					console.log("Found a PPG Monitor!");
 		    				}
 		    			});
 
@@ -160,7 +163,7 @@
 
 		    			}
 
-		    			$('#metricType').chosen();
+		    			$("#metricType").trigger("liszt:updated");
 		    			
 
 		    });
@@ -171,6 +174,8 @@
 			$("#error").empty().slideUp();
 			$("#dest").hide();
 			$("#edit").show();
+			$('#metricType').chosen();
+			$('#elementEntityId').chosen();
 			$("#scroll").chosen();
 			$("#refreshRate").chosen();
 			$("#scroll").val(settings ? settings.scroll : "auto");
@@ -246,6 +251,7 @@
 
 		$("#elementEntityId").on('change', function(evt, params) {
 	    	var entityId = $('#elementEntityId').val();
+	    	$("#metricType").empty();
 	    	if (entityId >= 1)
 	    	{
 	    		return populateMetricTypeSelector(entityId).then(function() {
