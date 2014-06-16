@@ -20,7 +20,7 @@
 	</grid_info>
 	<Content type="html">
 	<![CDATA[
-	<link rel="stylesheet" href="__UPTIME_GADGET_BASE__/chosen/chosen.min.css">
+	<link href="__UPTIME_HTTP_BASE__/styles/chosen/chosen.css?v=7.3.0.7" rel="stylesheet" type="text/css" />
 	<style scoped="scoped">
 		div {
 			font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -96,7 +96,7 @@
 	</div>
 	#includeResources(jquery)
 	<script type="text/javascript" src="__UPTIME_GADGET_BASE__/apiQueries.js?v=1"></script>
-	<script type="text/javascript" src="__UPTIME_GADGET_BASE__/chosen/chosen.jquery.min.js?v=1"></script>
+	<script type="text/javascript" src="__UPTIME_HTTP_BASE__/ajax/chosen.jquery.min.js?v=7.3.0.7"></script>
 	<script>
 		$("#save").click(function() {
 			$(this).prop("disabled", true);
