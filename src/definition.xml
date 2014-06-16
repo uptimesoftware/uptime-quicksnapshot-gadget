@@ -147,32 +147,33 @@
 			}
 		});
 
-		function groupSort(arg1, arg2) {
+		function entitySort(arg1, arg2) {
 			return naturalSort(arg1.name, arg2.name);
 		}
 
 		function populateIdSelector(selected_EntityId) {
 		var api = new apiQueries();
         $('#elementEntityId').empty().append($("<option />").val(-1).text("Loading..."));
-        return api.getAllElements().then(function(groups) {
+        return api.getAllElements().then(function(entities) {
             // fill in element drop down list
-            groups.sort(groupSort);
-            var groupSelector = $('#elementEntityId').empty();
+            entities.sort(entitySort);
+            var entitySelector = $('#elementEntityId').empty();
             var hasMyInfrastructure = false;
-            $.each(groups, function() {
+            $.each(entities, function() {
             	if (this.type == "Server")
             	{
-                	groupSelector.append($("<option />").val(this.id).text(this.name));
+                	entitySelector.append($("<option />").val(this.id).text(this.name));
                 }
             });
+            
             $("#elementEntityId").chosen();
+            
             if (selected_EntityId > 0) {
-                groupSelector.val(selected_EntityId);
-            } else if (hasMyInfrastructure) {
-                groupSelector.val(1);
+                entitySelector.val(selected_EntityId);
             }
-        });
-    }
+        	});
+    	}
+
 		function editSettings(settings) {
 			$("#save").prop("disabled", false);
 			$("#error").empty().slideUp();
@@ -196,6 +197,7 @@
 			displayStatusBar(error, "Error Loading the List of Elements from up.time Controller");
 		});
 		}
+
 		function doRender(settings) {
 			var dest = $("#dest");
 			if (settings && settings.iframeUrl) {
@@ -217,6 +219,7 @@
 				editSettings(settings);
 			}
 		}
+
 		function doError(status) {
 			$("#error").empty();
 			uptimeErrorFormatter.getErrorBox(status, "Error communicating with up.time").appendTo('#error');
