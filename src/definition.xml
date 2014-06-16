@@ -127,13 +127,17 @@
 	                	entitySelector.append($("<option />").val(this.id).text(this.name));
 	                }
 	            });
+	          
+	            if (selected_EntityId > 0) 
+	            {
+	                $('#elementEntityId').val(selected_EntityId);
+	                populateMetricTypeSelector(selected_EntityId);
+	            }
 	            
 	            $("#elementEntityId").trigger("liszt:updated");
 	            
 	            
-	            if (selected_EntityId > 0) {
-	                entitySelector.val(selected_EntityId);
-	            }
+
         	});
     	}
 
@@ -185,9 +189,9 @@
 				$("#refreshRate").val(-1);
 			}
 			var selected_EntityId = -1;
-			if (settings && settings.entityId)
+			if (settings && settings.EntityId)
 			{
-				selected_EntityId = settings.entityId;
+				selected_EntityId = settings.EntityId;
 			}
 			return populateIdSelector(selected_EntityId).then(function() {
 				null;
@@ -243,6 +247,12 @@
 				uptimeErrorFormatter.getErrorBox("Please select an Element").appendTo('#error');
 				$("#error").slideDown();
 				$("#save").prop("disabled", false);
+			} else if (!settings.MetricType) {
+				$("#error").empty();
+				uptimeErrorFormatter.getErrorBox("Please select a Metric Type").appendTo('#error');
+				$("#error").slideDown();
+				$("#save").prop("disabled", false);
+
 			} else {
 				$("#error").empty().slideUp();
 				uptimeGadget.saveSettings(settings).then(doRender, doError);
