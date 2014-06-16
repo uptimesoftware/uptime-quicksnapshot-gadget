@@ -10,9 +10,9 @@ function apiQueries() {
             deferred.reject(UPTIME.pub.errors.toDisplayableJQueryAjaxError(jqXHR, textStatus, errorThrown, this));
         });
         return deferred.promise;
-    }
+    };
 
-    function getElements(elementId) {
+    this.getElements = function (elementId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/elements/" + elementId, {
             cache : false
@@ -23,7 +23,7 @@ function apiQueries() {
         });
         return deferred.promise;
 
-    }
+    };
 
         this.getElementStatus = function(elementId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
