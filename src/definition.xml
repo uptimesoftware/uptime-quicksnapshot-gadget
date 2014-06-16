@@ -71,11 +71,18 @@
 	<div id="error"></div>
 	<div id="dest"></div>
 	<div id="edit">
-		<div id = "availableGroups">
+		<div id = "availableEntities">
+			<label for="elementEntityId">Element:</label>
 			<select id="elementEntityId">
 				<option value="-1">Loading...</option>
 			</select>
 			</div>
+		<div id = "availableMetricTypes">
+			<label for"metricType">Metric Type:</label>
+			<select id="metricType">
+				<option value="-1">Select an Element</option>
+			</select>
+		</div>
 		<label for="scroll">Scroll bars:</label>
 		<select id="scroll">
 			<option value="auto">Auto</option>
@@ -98,88 +105,74 @@
 	<script type="text/javascript" src="__UPTIME_GADGET_BASE__/apiQueries.js?v=1"></script>
 	<script type="text/javascript" src="__UPTIME_HTTP_BASE__/ajax/chosen.jquery.min.js?v=7.3.0.7"></script>
 	<script>
-		$("#save").click(function() {
-			$(this).prop("disabled", true);
-			var settings = {
-				EntityId: $('#elementEntityId').val(),
-				scroll: $("#scroll").val()
-			};
-
-			base_url = "/main.php?section=SysStatus&displaytab=1&active=s_pollAgent&etype=6&";
-
-			settings.iframeUrl = base_url + "&id=" + settings.EntityId;
-			settings.refreshInterval = $("#refreshRate").val();
-			if (!settings.EntityId) {
-				$("#error").empty();
-				uptimeErrorFormatter.getErrorBox("Please select an Element").appendTo('#error');
-				$("#error").slideDown();
-				$("#save").prop("disabled", false);
-			} else {
-				$("#error").empty().slideUp();
-				uptimeGadget.saveSettings(settings).then(doRender, doError);
-			}
-		});
-		uptimeGadget.registerOnResizeHandler(function(dimensions) {
-			$("#frame").height(dimensions.height).width(dimensions.width);
-			$("#dest").data("dimensions", dimensions);
-		});
-		uptimeGadget.registerOnEditHandler(function() {
-			$("#edit").hide();
-			var dest = $("#dest");
-			var interval = dest.data("interval");
-			if (interval) {
-				clearInterval(interval);
-			}
-			dest.empty()
-				.removeData("interval")
-				.css("background-position", "5px 5px")
-				.show();
-			uptimeGadget.loadSettings().then(function(settings) {
-				editSettings(settings);
-			});
-		});
-		uptimeGadget.registerOnLoadHandler(function(onLoadData) {
-			$("#dest").data("dimensions", onLoadData.dimensions);
-			if (onLoadData.hasPreloadedSettings()) {
-				doRender(onLoadData.settings);
-			} else {
-				uptimeGadget.loadSettings(doRender, doError);
-			}
-		});
-
 		function entitySort(arg1, arg2) {
 			return naturalSort(arg1.name, arg2.name);
 		}
 
 		function populateIdSelector(selected_EntityId) {
-		var api = new apiQueries();
-        $('#elementEntityId').empty().append($("<option />").val(-1).text("Loading..."));
-        return api.getAllElements().then(function(entities) {
-            // fill in element drop down list
-            entities.sort(entitySort);
-            var entitySelector = $('#elementEntityId').empty();
-            var hasMyInfrastructure = false;
-            $.each(entities, function() {
-            	if (this.type == "Server")
-            	{
-                	entitySelector.append($("<option />").val(this.id).text(this.name));
-                }
-            });
-            
-            $("#elementEntityId").chosen();
-            
-            if (selected_EntityId > 0) {
-                entitySelector.val(selected_EntityId);
-            }
+			var api = new apiQueries();
+	    	$('#elementEntityId').empty().append($("<option />").val(-1).text("Loading..."));
+
+	        return api.getAllElements().then(function(entities) {
+	            // fill in element drop down list
+	            entities.sort(entitySort);
+	            var entitySelector = $('#elementEntityId').empty();
+	            var hasMyInfrastructure = false;
+	            $.each(entities, function() {
+	            	if (this.type == "Server")
+	            	{
+	                	entitySelector.append($("<option />").val(this.id).text(this.name));
+	                }
+	            });
+	            
+	            $("#elementEntityId").chosen();
+	            
+	            if (selected_EntityId > 0) {
+	                entitySelector.val(selected_EntityId);
+	            }
         	});
     	}
+
+    	function populateMetricTypeSelector(selected_EntityId) {
+    		console.log("Getting Metric Types available for " + selected_EntityId);
+    		var api = new apiQueries();
+	        $('#metricType').empty().append($("<option />").val(-1).text("Loading..."));
+
+	    	return api.getElements(selected_EntityId).then(function(entity_details) {
+		    			
+		    			//lets check if the element has a PPG monitor
+		    			var metricTypeSelector = $("#metricType").empty();
+		    			var hasPPG = false;
+		    			console.log("HasPPG = " + hasPPG);
+		    			$.each (entity_details.monitors, function() {
+		    				if (this.name == "Platform Performance Gatherer")
+		    				{
+		    					hasPPG=true;
+		    					console.log("Found a PPG Monitor!");
+		    				}
+		    			});
+
+		    			metricTypeSelector.append($("<option />").val("VirtualMachineAgentWmiQuickSnapshot").text("VM Metrics"));
+		    			if ( hasPPG )
+		    			{
+		    				metricTypeSelector.append($("<option />").val("SysStatus").text("Agent Metrics"));
+		    				metricTypeSelector.val("SysStatus");
+
+		    			}
+
+		    			$('#metricType').chosen();
+		    			
+
+		    });
+		}
 
 		function editSettings(settings) {
 			$("#save").prop("disabled", false);
 			$("#error").empty().slideUp();
 			$("#dest").hide();
 			$("#edit").show();
-			//$("#elementEntityId").chosen();
+			$("#scroll").chosen();
+			$("#refreshRate").chosen();
 			$("#scroll").val(settings ? settings.scroll : "auto");
 			if (settings && settings.refreshInterval) {
 				$("#refreshRate").val(settings.refreshInterval);
@@ -226,6 +219,73 @@
 			$("#error").slideDown();
 			$("#save").prop("disabled", false);
 		}
+
+
+		$("#save").click(function() {
+			$(this).prop("disabled", true);
+			var settings = {
+				EntityId: $('#elementEntityId').val(),
+				MetricType: $('#metricType').val(),
+				scroll: $("#scroll").val()
+			};
+
+			base_url = "/main.php?section=" + settings.MetricType + "&displaytab=1&active=s_pollAgent&etype=6&";
+
+			settings.iframeUrl = base_url + "&id=" + settings.EntityId;
+			settings.refreshInterval = $("#refreshRate").val();
+			if (!settings.EntityId) {
+				$("#error").empty();
+				uptimeErrorFormatter.getErrorBox("Please select an Element").appendTo('#error');
+				$("#error").slideDown();
+				$("#save").prop("disabled", false);
+			} else {
+				$("#error").empty().slideUp();
+				uptimeGadget.saveSettings(settings).then(doRender, doError);
+			}
+		});
+
+		$("#elementEntityId").on('change', function(evt, params) {
+	    	var entityId = $('#elementEntityId').val();
+	    	if (entityId >= 1)
+	    	{
+	    		return populateMetricTypeSelector(entityId).then(function() {
+	    			null;
+	    		}, function(error) {
+
+	    		});
+	    		
+	    	}
+    	});
+
+		uptimeGadget.registerOnResizeHandler(function(dimensions) {
+			$("#frame").height(dimensions.height).width(dimensions.width);
+			$("#dest").data("dimensions", dimensions);
+		});
+
+		uptimeGadget.registerOnEditHandler(function() {
+			$("#edit").hide();
+			var dest = $("#dest");
+			var interval = dest.data("interval");
+			if (interval) {
+				clearInterval(interval);
+			}
+			dest.empty()
+				.removeData("interval")
+				.css("background-position", "5px 5px")
+				.show();
+			uptimeGadget.loadSettings().then(function(settings) {
+				editSettings(settings);
+			});
+		});
+
+		uptimeGadget.registerOnLoadHandler(function(onLoadData) {
+			$("#dest").data("dimensions", onLoadData.dimensions);
+			if (onLoadData.hasPreloadedSettings()) {
+				doRender(onLoadData.settings);
+			} else {
+				uptimeGadget.loadSettings(doRender, doError);
+			}
+		});
 	</script>
 	]]>
 	</Content>
