@@ -1,6 +1,6 @@
 function apiQueries() {
 
-    function getGroup(groupId) {
+    this.getGroup = function(groupId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/groups/" + groupId, {
             cache : false
@@ -25,7 +25,7 @@ function apiQueries() {
 
     };
 
-        this.getElementStatus = function(elementId) {
+    this.getElementStatus = function(elementId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/elements/" + elementId + "/status", {
             cache : false
@@ -53,7 +53,7 @@ function apiQueries() {
         return deferred.promise;
     };
 
-    function createGroupFilter(groupIds) {
+    this.createGroupFilter = function(groupIds) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/groups/filter", {
             cache : false,
@@ -70,9 +70,9 @@ function apiQueries() {
             deferred.reject(UPTIME.pub.errors.toDisplayableJQueryAjaxError(jqXHR, textStatus, errorThrown, this));
         });
         return deferred.promise;
-    }
+    };
 
-    function getGroupStatuses(filterId) {
+    this.getGroupStatuses = function(filterId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/groups/filter/" + filterId + "/status", {
             cache : false
@@ -82,9 +82,9 @@ function apiQueries() {
             deferred.reject(UPTIME.pub.errors.toDisplayableJQueryAjaxError(jqXHR, textStatus, errorThrown, this));
         });
         return deferred.promise;
-    }
+    };
 
-    function collectGroups(groups, groupId, idsToGroups, parentIdsToGroupIds) {
+    this.collectGroups = function(groups, groupId, idsToGroups, parentIdsToGroupIds) {
         groups.push(idsToGroups[groupId]);
         if (!parentIdsToGroupIds[groupId]) {
             return;
@@ -92,9 +92,9 @@ function apiQueries() {
         $.each(parentIdsToGroupIds[groupId], function(i, childGroupId) {
             collectGroups(groups, childGroupId, idsToGroups, parentIdsToGroupIds);
         });
-    }
+    };
 
-    function findGroups(groupId, data) {
+    this.findGroups = function(groupId, data) {
         var groups = [];
         if (!groupId || !data || !$.isArray(data) || data.length <= 0) {
             return groups;
@@ -111,9 +111,9 @@ function apiQueries() {
         });
         collectGroups(groups, groupId, idsToGroups, parentIdsToGroupIds);
         return groups;
-    }
+    };
 
-    function getGroupWithSubGroups(groupId) {
+    this.getGroupWithSubGroups = function(groupId) {
         var deferred = UPTIME.pub.gadgets.promises.defer();
         $.ajax("/api/v1/groups", {
             cache : false
@@ -132,7 +132,7 @@ function apiQueries() {
             deferred.reject(UPTIME.pub.errors.toDisplayableJQueryAjaxError(jqXHR, textStatus, errorThrown, this));
         });
         return deferred.promise;
-    }
+    };
 
     this.getAllGroups = function() {
         var deferred = UPTIME.pub.gadgets.promises.defer();
