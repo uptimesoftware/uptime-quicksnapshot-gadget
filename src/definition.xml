@@ -122,7 +122,7 @@
 	            var entitySelector = $('#elementEntityId').empty();
 	            var hasMyInfrastructure = false;
 	            $.each(entities, function() {
-	            	if (this.type == "Server")
+	            	if (this.type == "Server" && this.isMonitored === true)
 	            	{
 	                	entitySelector.append($("<option />").val(this.id).text(this.name));
 	                }
