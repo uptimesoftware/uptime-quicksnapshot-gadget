@@ -2,7 +2,7 @@
 <Module>
 	<ModulePrefs title="QuickSnapshot Gadget" description="Use this gadget to easily display the QuickSnapshot view for an Element in your own custom dashboards." thumbnail="QuickSnapShotThm.png"/>
 	<gadget_version>
-		1.0
+		1.01
 	</gadget_version>
 	<grid_info>
 		<supported_versions>
@@ -102,7 +102,7 @@
 		<button id="save">Save</button>
 	</div>
 	#includeResources(jquery)
-	<script type="text/javascript" src="__UPTIME_GADGET_BASE__/apiQueries.js?v=1"></script>
+	<script type="text/javascript" src="__UPTIME_GADGET_BASE__/apiQueries.js?v=1.01"></script>
 	<script type="text/javascript" src="__UPTIME_HTTP_BASE__/ajax/chosen.jquery.min.js?v=7.3.0.7"></script>
 	<script>
 		function entitySort(arg1, arg2) {
