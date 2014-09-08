@@ -39,6 +39,10 @@
 			background-repeat: no-repeat;
 			width: 100%;
 		}
+		#title {
+			font-size: 16px;
+			font-weight: bold;
+		}
 		#edit {
 			padding: 5px;
 			display: none;
@@ -71,7 +75,7 @@
 	<div id="error"></div>
 	<div id="dest">
 		<div id="dest-header">
-			<h1>This is a Title</h1>
+			<h1 id="title">This is a Title</h1>
 		</div>
 		<div id="dest-body">
 		</div>
@@ -207,10 +211,21 @@
 		});
 		}
 
+		function updateTitle(entity_id) {
+			var title = $("#title");
+			var api = new apiQueries();
+			return api.getElements(entity_id).then(function(entity) {
+				var name = entity.name;	
+				title.html(name);
+			});
+		}
+
 		function doRender(settings) {
+			
 			$("#dest").show();
 			var dest = $("#dest-body");
 			if (settings && settings.iframeUrl) {
+				updateTitle(settings.EntityId);
 				$("#edit").hide();
 				dest.empty()
 						.css("background-position", "-9999px -9999px")
