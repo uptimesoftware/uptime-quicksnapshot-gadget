@@ -33,7 +33,7 @@
 			margin-left: auto;
 			margin-right: auto;
 		}
-		#dest {
+		#dest-body {
 			background-image: url("__UPTIME_GADGET_BASE__/spinner.gif");
 			background-position: 5px 5px;
 			background-repeat: no-repeat;
@@ -69,7 +69,13 @@
 		}
 	</style>
 	<div id="error"></div>
-	<div id="dest"></div>
+	<div id="dest">
+		<div id="dest-header">
+			<h1>This is a Title</h1>
+		</div>
+		<div id="dest-body">
+		</div>
+	</div>
 	<div id="edit">
 		<div id = "availableEntities">
 			<label for="elementEntityId">Element:</label>
@@ -202,7 +208,8 @@
 		}
 
 		function doRender(settings) {
-			var dest = $("#dest");
+			$("#dest").show();
+			var dest = $("#dest-body");
 			if (settings && settings.iframeUrl) {
 				$("#edit").hide();
 				dest.empty()
@@ -276,12 +283,12 @@
 
 		uptimeGadget.registerOnResizeHandler(function(dimensions) {
 			$("#frame").height(dimensions.height).width(dimensions.width);
-			$("#dest").data("dimensions", dimensions);
+			$("#dest-body").data("dimensions", dimensions);
 		});
 
 		uptimeGadget.registerOnEditHandler(function() {
 			$("#edit").hide();
-			var dest = $("#dest");
+			var dest = $("#dest-body");
 			var interval = dest.data("interval");
 			if (interval) {
 				clearInterval(interval);
@@ -296,7 +303,7 @@
 		});
 
 		uptimeGadget.registerOnLoadHandler(function(onLoadData) {
-			$("#dest").data("dimensions", onLoadData.dimensions);
+			$("#dest-body").data("dimensions", onLoadData.dimensions);
 			if (onLoadData.hasPreloadedSettings()) {
 				doRender(onLoadData.settings);
 			} else {
