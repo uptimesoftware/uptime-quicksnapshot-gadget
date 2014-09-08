@@ -75,7 +75,7 @@
 	<div id="error"></div>
 	<div id="dest">
 		<div id="dest-header">
-			<h1 id="title">This is a Title</h1>
+			<h1 id="title"></h1>
 		</div>
 		<div id="dest-body">
 		</div>
