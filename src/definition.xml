@@ -215,7 +215,7 @@
 			return populateIdSelector(selected_EntityId).then(function() {
 				null;
 		}, function(error) {
-			displayStatusBar(error, "Error Loading the List of Elements from up.time Controller");
+			displayStatusBar(error, "Error Loading the List of Elements from Uptime Controller");
 		});
 		}
 
@@ -262,7 +262,7 @@
 
 		function doError(status) {
 			$("#error").empty();
-			uptimeErrorFormatter.getErrorBox(status, "Error communicating with up.time").appendTo('#error');
+			uptimeErrorFormatter.getErrorBox(status, "Error communicating with Uptime").appendTo('#error');
 			$("#error").slideDown();
 			$("#save").prop("disabled", false);
 		}
